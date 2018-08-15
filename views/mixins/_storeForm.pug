@@ -16,7 +16,7 @@ mixin storeForm(store = {})
         input(type="text" id="lat" name="location[coordinates][1]" value=(store.location && store.location.coordinates[1]))
         br
         br
-        - const choices = ['WIFI', 'Family-Friendly', 'Dog Friendly', 'Veg/Non Veg']
+        - const choices = ['WIFI', 'Family-Friendly', 'Dog Friendly', 'Veg-Non Veg']
         - const tags = store.tags || []
         ul.tags
             each choice in choices
