@@ -1013,7 +1013,9 @@ Object.defineProperty(exports, "__esModule", {
 var axios = __webpack_require__(14);
 
 function searchResultsHTML(stores) {
-    return stores.map();
+    return stores.map(function (store) {
+        return '\n            <a href="/store/' + store.slug + '" class="search__result">\n                <strong>' + store.name + '</strong>\n            </a>\n        ';
+    }).join('');
 }
 
 function typeAhead(search) {
@@ -1026,10 +1028,37 @@ function typeAhead(search) {
             return;
         }
         searchResults.style.display = 'block';
+        searchResults.innerHTML = '';
 
         axios.get('/api/search?q=' + this.value).then(function (res) {
-            if (res.data.length) {}
+            if (res.data.length) {
+                searchResults.innerHTML = searchResultsHTML(res.data);
+            }
+        }).catch(function (err) {
+            console.log(err);
         });
+    });
+
+    searchInput.on('keyup', function (e) {
+        if (![38, 40, 13].includes(e.keyCode)) {
+            return;
+        }
+        var activeClass = 'search__result--active';
+        var current = search.querySelector('.' + activeClass);
+        var items = search.querySelectorAll('.search__result');
+        var next = void 0;
+        if (e.keyCode === 40 && current) {
+            next = current.nextElementSibling | items[0];
+        } else if (e.keyCode === 40) {
+            next = items[0];
+        } else if (e.keyCode === 38 && current) {
+            next = current.previousElementSibling || items[items.length - 1];
+        } else if (e.keyCode === 38) {
+            next = items[items.length - 1];
+        } else if (keyCode === 13 && current.href) {
+            window.location = current.href;
+        }
+        console.log(next);
     });
 }
 
