@@ -138,3 +138,9 @@ exports.mapStores = async(req, res) =>{
 exports.mapPage = (req, res) => {
   res.render('map', {title: 'map'})
 }
+
+exports.heart = async(req, res) =>{
+  const hearts = req.user.hearts.map(obj => obj.toString())
+  console.log(hearts)
+  res.json(hearts)
+}
