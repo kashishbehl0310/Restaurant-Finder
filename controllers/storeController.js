@@ -55,8 +55,16 @@ exports.getStores = async (req, res) => {
   const limit = 4;
   const skip = (page * limit) - limit;
   // 1. Query the database for a list of all stores
-  const stores = await Store.find().skip(skip).limit(limit);
-  res.render('stores', { title: 'Stores', stores });
+  const storesPromise = Store.find().skip(skip).limit(limit).sort({created: 'desc'});
+  const countPromise = Store.count();
+  const [stores, count] = await Promise.all([storesPromise, countPromise])
+  const pages = Math.ceil(count / limit);
+  if(!stores.length && skip){
+    req.flash('info', `Page ${page} does not exist`)
+    res.redirect(`/stores/page/${pages}`)
+    return
+  }
+  res.render('stores', { title: 'Stores', stores, pages, page, count });
 };
 
 
