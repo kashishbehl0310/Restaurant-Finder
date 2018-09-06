@@ -52,15 +52,24 @@ function loadPlaces(map, lat = 43.2, lng = -79.8) {
 function makeMap(mapDiv) {
   if (!mapDiv) return;
   // make our map
-  const map = new google.maps.Map(mapDiv, mapOptions);
-  loadPlaces(map);
-
-  const input = $('[name="geolocate"]');
-  const autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.addListener('place_changed', () => {
+  console.log('khkakahdkadh');
+  navigator.geolocation.getCurrentPosition(function(position){
+    mapOptions.center.lat = position.coords.longitude;
+    mapOptions.center.lng = position.coords.latitude;
+    // return lat;
+    console.log(mapOptions);
+    const map = new google.maps.Map(mapDiv, mapOptions);
+    console.log(map);
+    loadPlaces(map, position.coords.latitude, position.coords.longitude);
+    const input = $('[name="geolocate"]');
+    const autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.addListener('place_changed', () => {
     const place = autocomplete.getPlace();
     loadPlaces(map, place.geometry.location.lat(), place.geometry.location.lng());
   });
+  })
+  
+
 }
 
 export default makeMap;

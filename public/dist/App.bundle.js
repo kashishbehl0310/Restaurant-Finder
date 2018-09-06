@@ -1085,14 +1085,21 @@ function loadPlaces(map) {
 function makeMap(mapDiv) {
   if (!mapDiv) return;
   // make our map
-  var map = new google.maps.Map(mapDiv, mapOptions);
-  loadPlaces(map);
-
-  var input = (0, _bling.$)('[name="geolocate"]');
-  var autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.addListener('place_changed', function () {
-    var place = autocomplete.getPlace();
-    loadPlaces(map, place.geometry.location.lat(), place.geometry.location.lng());
+  console.log('khkakahdkadh');
+  navigator.geolocation.getCurrentPosition(function (position) {
+    mapOptions.center.lat = position.coords.longitude;
+    mapOptions.center.lng = position.coords.latitude;
+    // return lat;
+    console.log(mapOptions);
+    var map = new google.maps.Map(mapDiv, mapOptions);
+    console.log(map);
+    loadPlaces(map, position.coords.latitude, position.coords.longitude);
+    var input = (0, _bling.$)('[name="geolocate"]');
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.addListener('place_changed', function () {
+      var place = autocomplete.getPlace();
+      loadPlaces(map, place.geometry.location.lat(), place.geometry.location.lng());
+    });
   });
 }
 
